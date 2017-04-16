@@ -26,6 +26,6 @@ class GuzzleFactoryTest extends TestCase
 {
     public function testMake()
     {
-        $this->assertInstanceOf(Client::class, GuzzleFactory::make('https://example.com'));
+        $this->assertInstanceOf(Client::class, GuzzleFactory::make());
     }
 }
