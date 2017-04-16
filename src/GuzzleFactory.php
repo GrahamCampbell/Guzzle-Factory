@@ -36,7 +36,7 @@ final class GuzzleFactory
      *
      * @return \GuzzleHttp\Client
      */
-    public static function make(array $options, int $backoff = 1000)
+    public static function make(array $options = [], int $backoff = 1000)
     {
         $stack = HandlerStack::create();
 
