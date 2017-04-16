@@ -27,7 +27,7 @@ $ composer require graham-campbell/guzzle-factory
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 
-$client = GuzzleFactory::make('https://example.com');
+$client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
 ```
 
 
