@@ -31,14 +31,12 @@ final class GuzzleFactory
     /**
      * Create a new guzzle client.
      *
-     * @param string|null $base
-     * @param int         $connect
-     * @param int         $timeout
-     * @param int         $backoff
+     * @param array $options
+     * @param int   $backoff
      *
      * @return \GuzzleHttp\Client
      */
-    public static function make(string $base = null, int $connect = 10, int $timeout = 15, int $backoff = 1000)
+    public static function make(array $options, int $backoff = 1000)
     {
         $stack = HandlerStack::create();
 
@@ -48,12 +46,6 @@ final class GuzzleFactory
             return (int) pow(2, $retries) * $backoff;
         }));
 
-        $options = ['handler' => $stack, 'connect_timeout' => $connect, 'timeout' => $timeout];
-
-        if ($base) {
-            $options['base_uri'] = $base;
-        }
-
-        return new Client($options);
+        return new Client(array_merge(['handler' => $stack, 'connect_timeout' => 10, 'timeout' => 15], $options));
     }
 }
