@@ -15,6 +15,7 @@ namespace GrahamCampbell\Tests\GuzzleFactory;
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,5 +28,10 @@ class GuzzleFactoryTest extends TestCase
     public function testMake()
     {
         $this->assertInstanceOf(Client::class, GuzzleFactory::make());
+    }
+
+    public function testHandler()
+    {
+        $this->assertInstanceOf(HandlerStack::class, GuzzleFactory::handler());
     }
 }
