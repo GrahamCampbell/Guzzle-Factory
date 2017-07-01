@@ -38,6 +38,20 @@ final class GuzzleFactory
      */
     public static function make(array $options = [], int $backoff = 1000)
     {
+        $stack = static::handler($backoff);
+
+        return new Client(array_merge(['handler' => $stack, 'connect_timeout' => 10, 'timeout' => 15], $options));
+    }
+
+    /**
+     * Create a new guzzle handler stack.
+     *
+     * @param int $backoff
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public static function handler(int $backoff = 1000)
+    {
         $stack = HandlerStack::create();
 
         $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) {
@@ -46,6 +60,6 @@ final class GuzzleFactory
             return (int) pow(2, $retries) * $backoff;
         }));
 
-        return new Client(array_merge(['handler' => $stack, 'connect_timeout' => 10, 'timeout' => 15], $options));
+        return $stack;
     }
 }
