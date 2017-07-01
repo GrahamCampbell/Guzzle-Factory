@@ -43,6 +43,13 @@ final class GuzzleFactory
     const TIMEOUT = 15;
 
     /**
+     * The default backoff multiplier.
+     *
+     * @var int
+     */
+    const BACKOFF = 1000;
+
+    /**
      * The default 4xx retry codes.
      *
      * @var int[]
@@ -53,12 +60,12 @@ final class GuzzleFactory
      * Create a new guzzle client.
      *
      * @param array      $options
-     * @param int        $backoff
+     * @param int|null   $backoff
      * @param int[]|null $codes
      *
      * @return \GuzzleHttp\Client
      */
-    public static function make(array $options = [], int $backoff = 1000, array $codes = null)
+    public static function make(array $options = [], int $backoff = null, array $codes = null)
     {
         return new Client(array_merge(['handler' => self::handler($backoff, $codes), 'connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options));
     }
@@ -66,19 +73,19 @@ final class GuzzleFactory
     /**
      * Create a new guzzle handler stack.
      *
-     * @param int        $backoff
+     * @param int|null   $backoff
      * @param int[]|null $codes
      *
      * @return \GuzzleHttp\Client
      */
-    public static function handler(int $backoff = 1000, array $codes = null)
+    public static function handler(int $backoff = null, array $codes = null)
     {
         $stack = HandlerStack::create();
 
         $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) {
             return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($codes === null ? self::CODES : $codes, $response->getStatusCode()))));
         }, function ($retries) use ($backoff) {
-            return (int) pow(2, $retries) * $backoff;
+            return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
         }));
 
         return $stack;
