@@ -76,7 +76,7 @@ final class GuzzleFactory
      * @param int|null   $backoff
      * @param int[]|null $codes
      *
-     * @return \GuzzleHttp\Client
+     * @return \GuzzleHttp\HandlerStack
      */
     public static function handler(int $backoff = null, array $codes = null)
     {
