@@ -6,6 +6,8 @@ Guzzle Factory was created by, and is maintained by [Graham Campbell](https://gi
 <p align="center">
 <a href="https://styleci.io/repos/88412277"><img src="https://styleci.io/repos/88412277/shield" alt="StyleCI Status"></img></a>
 <a href="https://travis-ci.org/GrahamCampbell/Guzzle-Factory"><img src="https://img.shields.io/travis/GrahamCampbell/Guzzle-Factory/master.svg?style=flat-square" alt="Build Status"></img></a>
+<a href="https://scrutinizer-ci.com/g/GrahamCampbell/Guzzle-Factory/code-structure"><img src="https://img.shields.io/scrutinizer/coverage/g/GrahamCampbell/Guzzle-Factory.svg?style=flat-square" alt="Coverage Status"></img></a>
+<a href="https://scrutinizer-ci.com/g/GrahamCampbell/Guzzle-Factory"><img src="https://img.shields.io/scrutinizer/g/GrahamCampbell/Guzzle-Factory.svg?style=flat-square" alt="Quality Score"></img></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License"></img></a>
 <a href="https://github.com/GrahamCampbell/Guzzle-Factory/releases"><img src="https://img.shields.io/github/release/GrahamCampbell/Guzzle-Factory.svg?style=flat-square" alt="Latest Version"></img></a>
 </p>
