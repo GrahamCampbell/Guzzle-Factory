@@ -82,7 +82,7 @@ final class GuzzleFactory
     {
         $stack = HandlerStack::create();
 
-        $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) {
+        $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes) {
             return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($codes === null ? self::CODES : $codes, $response->getStatusCode()))));
         }, function ($retries) use ($backoff) {
             return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
