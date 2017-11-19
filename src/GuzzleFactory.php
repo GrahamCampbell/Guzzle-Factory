@@ -36,7 +36,7 @@ final class GuzzleFactory
     const CONNECT_TIMEOUT = 10;
 
     /**
-     * The default connect timeout.
+     * The default transport timeout.
      *
      * @var int
      */
