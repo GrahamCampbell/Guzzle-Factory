@@ -67,20 +67,24 @@ final class GuzzleFactory
      */
     public static function make(array $options = [], int $backoff = null, array $codes = null)
     {
-        return new Client(array_merge(['handler' => self::handler($backoff, $codes), 'connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options));
+        $config = array_merge(['connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options);
+        $config['handler'] = self::handler($backoff, $codes, $options['handler'] ?? null);
+
+        return new Client($config);
     }
 
     /**
      * Create a new guzzle handler stack.
      *
-     * @param int|null   $backoff
-     * @param int[]|null $codes
+     * @param int|null                      $backoff
+     * @param int[]|null                    $codes
+     * @param \GuzzleHttp\HandlerStack|null $stack
      *
      * @return \GuzzleHttp\HandlerStack
      */
-    public static function handler(int $backoff = null, array $codes = null)
+    public static function handler(int $backoff = null, array $codes = null, HandlerStack $stack = null)
     {
-        $stack = HandlerStack::create();
+        $stack = $stack ?: HandlerStack::create();
 
         $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes) {
             return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes === null ? self::CODES : $codes, true))));
