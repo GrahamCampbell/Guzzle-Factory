@@ -14,6 +14,7 @@
         "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
+        "graham-campbell/analyzer": "^2.0",
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {
