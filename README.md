@@ -1,7 +1,7 @@
 Guzzle Factory
 ==================
 
-Guzzle Factory was created by, and is maintained by [Graham Campbell](https://github.com/GrahamCampbell), and provides a simple Guzzle 6 factory, with good defaults. Feel free to check out the [change log](CHANGELOG.md), [releases](https://github.com/GrahamCampbell/Guzzle-Factory/releases), [license](LICENSE), [security policy](.github/SECURITY.md), [code of conduct](.github/CODE_OF_CONDUCT.md), and [contribution guidelines](.github/CONTRIBUTING.md).
+Guzzle Factory was created by, and is maintained by [Graham Campbell](https://github.com/GrahamCampbell), and provides a simple Guzzle 6 factory, with good defaults. Feel free to check out the [change log](CHANGELOG.md), [releases](https://github.com/GrahamCampbell/Guzzle-Factory/releases), [security policy](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy), [license](LICENSE), [code of conduct](.github/CODE_OF_CONDUCT.md), and [contribution guidelines](.github/CONTRIBUTING.md).
 
 <p align="center">
 <a href="https://styleci.io/repos/88412277"><img src="https://styleci.io/repos/88412277/shield" alt="StyleCI Status"></img></a>
@@ -35,7 +35,7 @@ $client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
 
 ## Security
 
-If you discover a security vulnerability within this package, please send an email to Graham Campbell at graham@alt-three.com. All security vulnerabilities will be promptly addressed. You may view our full policy [here](.github/SECURITY.md).
+If you discover a security vulnerability within this package, please send an email to Graham Campbell at graham@alt-three.com. All security vulnerabilities will be promptly addressed. You may view our full security policy [here](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy).
 
 
 ## License
