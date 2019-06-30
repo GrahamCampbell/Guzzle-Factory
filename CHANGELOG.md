@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V3.0.1 (30/06/2019)
+
+* Officially support PHP 7.3
+
+
 ## V3.0 (27/12/2017)
 
 * Allow a base handler to be specified and used
