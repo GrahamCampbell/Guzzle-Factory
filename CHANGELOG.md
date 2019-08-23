@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V3.0.2 (23/08/2019)
+
+* Support PHP 7.0 - 7.4 only
+
+
 ## V3.0.1 (30/06/2019)
 
 * Officially support PHP 7.3
