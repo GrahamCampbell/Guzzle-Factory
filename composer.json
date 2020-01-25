@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "php": "^7.0",
-        "guzzlehttp/guzzle": "^6.2"
+        "php": "^7.2.5",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
-        "graham-campbell/analyzer": "^2.1",
-        "phpunit/phpunit": "^6.5|^7.0|^8.0"
+        "graham-campbell/analyzer": "^2.4.1",
+        "phpunit/phpunit": "^7.5.15|^8.3.5"
     },
     "autoload": {
         "psr-4": {
@@ -32,7 +32,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "dev-master": "4.0-dev"
         }
     },
     "minimum-stability": "dev",

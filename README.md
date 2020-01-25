@@ -1,7 +1,7 @@
 Guzzle Factory
 ==================
 
-Guzzle Factory was created by, and is maintained by [Graham Campbell](https://github.com/GrahamCampbell), and provides a simple Guzzle 6 factory, with good defaults. Feel free to check out the [change log](CHANGELOG.md), [releases](https://github.com/GrahamCampbell/Guzzle-Factory/releases), [security policy](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy), [license](LICENSE), [code of conduct](.github/CODE_OF_CONDUCT.md), and [contribution guidelines](.github/CONTRIBUTING.md).
+Guzzle Factory was created by, and is maintained by [Graham Campbell](https://github.com/GrahamCampbell), and provides a simple Guzzle factory, with good defaults. Feel free to check out the [change log](CHANGELOG.md), [releases](https://github.com/GrahamCampbell/Guzzle-Factory/releases), [security policy](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy), [license](LICENSE), [code of conduct](.github/CODE_OF_CONDUCT.md), and [contribution guidelines](.github/CONTRIBUTING.md).
 
 ![Banner](https://user-images.githubusercontent.com/2829600/71477092-0f3c7780-27e0-11ea-95cb-22c5ff39ab29.png)
 
@@ -17,7 +17,7 @@ Guzzle Factory was created by, and is maintained by [Graham Campbell](https://gi
 
 ## Installation
 
-Guzzle Factory requires [PHP](https://php.net) 7.0-7.4.
+Guzzle Factory requires [PHP](https://php.net) 7.2-7.4.
 
 To get the latest version, simply require the project using [Composer](https://getcomposer.org):
 
