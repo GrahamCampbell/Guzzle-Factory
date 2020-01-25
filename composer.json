@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "graham-campbell/analyzer": "^2.4.1",
-        "phpunit/phpunit": "^7.5.15|^8.3.5"
+        "phpunit/phpunit": "^8.5.2"
     },
     "autoload": {
         "psr-4": {
