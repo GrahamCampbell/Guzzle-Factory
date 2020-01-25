@@ -2,10 +2,6 @@ dist: bionic
 
 matrix:
   include:
-    - name: PHP 7.0
-      env: PHP_VERSION=7.0
-    - name: PHP 7.1
-      env: PHP_VERSION=7.1
     - name: PHP 7.2
       env: PHP_VERSION=7.2
     - name: PHP 7.3
