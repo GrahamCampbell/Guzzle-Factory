@@ -2,6 +2,12 @@ CHANGE LOG
 ==========
 
 
+## V4.0 (25/01/2020)
+
+* Support PHP 7.2 - 7.4 only
+* Switch to Guzzle 7
+
+
 ## V3.0.2 (23/08/2019)
 
 * Support PHP 7.0 - 7.4 only
