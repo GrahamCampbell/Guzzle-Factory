@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V4.0.1 (Upcoming)
+
+* Updated funding information
+
+
 ## V4.0 (25/01/2020)
 
 * Support PHP 7.2 - 7.4 only
