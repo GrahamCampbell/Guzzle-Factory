@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.2.5|^8.0",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
@@ -28,7 +28,8 @@
         }
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "platform-check": false
     },
     "extra": {
         "branch-alias": {
