@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V4.0.2 (Upcoming)
+
+* Provisional PHP 8.0 support
+
+
 ## V4.0.1 (13/04/2020)
 
 * Updated funding information
