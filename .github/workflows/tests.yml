@@ -23,7 +23,7 @@ jobs:
       run: docker run --rm -w /data -v ${{ github.workspace }}:/data --entrypoint composer registry.gitlab.com/grahamcampbell/php:${{ matrix.php }}-base update -n -o
       if: "matrix.php < 8"
     - name: Run Composer PHP 8
-      run: docker run --rm -w /data -v ${{ github.workspace }}:/data --entrypoint composer registry.gitlab.com/grahamcampbell/php:${{ matrix.php }}-base update -n -o --ignore-platform-req=php
+      run: docker run --rm -w /data -v ${{ github.workspace }}:/data --entrypoint composer registry.gitlab.com/grahamcampbell/php:${{ matrix.php }}-base update -n -o --ignore-platform-reqs
       if: "matrix.php >= 8"
     - name: Run PHPUnit PHP 7
       run: docker run --rm -w /data -v ${{ github.workspace }}:/data --entrypoint vendor/bin/phpunit registry.gitlab.com/grahamcampbell/php:${{ matrix.php }} --coverage-clover build/logs/clover.xml
