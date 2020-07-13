@@ -21,7 +21,7 @@ Guzzle Factory requires [PHP](https://php.net) 7.2-8.0.
 To get the latest version, simply require the project using [Composer](https://getcomposer.org):
 
 ```bash
-$ composer require graham-campbell/guzzle-factory:^3.0
+$ composer require graham-campbell/guzzle-factory:^4.0
 ```
 
 
