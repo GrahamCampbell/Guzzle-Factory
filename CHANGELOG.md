@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V4.0.3 (22/07/2020)
+
+* Minimum Guzzle version 7.0.1
+
+
 ## V4.0.2 (02/05/2020)
 
 * Provisional PHP 8.0 support
