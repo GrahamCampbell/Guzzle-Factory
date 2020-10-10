@@ -2,6 +2,12 @@ CHANGE LOG
 ==========
 
 
+## V4.1 (10/10/2020)
+
+* Full PHP 8.0 support
+* Raise response body truncation in error messages from 100 to 250 characters
+
+
 ## V4.0.3 (22/07/2020)
 
 * Minimum Guzzle version 7.0.1
