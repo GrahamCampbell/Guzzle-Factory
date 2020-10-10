@@ -11,10 +11,10 @@
     ],
     "require": {
         "php": "^7.2.5 || ^8.0",
-        "guzzlehttp/guzzle": "^7.0.1"
+        "guzzlehttp/guzzle": "^7.2"
     },
     "require-dev": {
-        "graham-campbell/analyzer": "^3.0",
+        "graham-campbell/analyzer": "^3.0.4",
         "phpunit/phpunit": "^8.5.8 || ^9.3.7"
     },
     "autoload": {

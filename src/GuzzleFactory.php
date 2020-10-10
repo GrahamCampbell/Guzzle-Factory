@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\GuzzleFactory;
 
+use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -74,7 +76,7 @@ final class GuzzleFactory
     }
 
     /**
-     * Create a new guzzle handler stack.
+     * Create a new retrying handler stack.
      *
      * @param int|null                      $backoff
      * @param int[]|null                    $codes
@@ -84,14 +86,46 @@ final class GuzzleFactory
      */
     public static function handler(int $backoff = null, array $codes = null, HandlerStack $stack = null)
     {
-        $stack = $stack ?: HandlerStack::create();
+        $stack = $stack ?: self::createHandlerStack(Utils::chooseHandler());
 
-        $stack->push(Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes) {
-            return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes === null ? self::CODES : $codes, true))));
-        }, function ($retries) use ($backoff) {
-            return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
-        }));
+        $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES), 'retry');
 
         return $stack;
+    }
+
+    /**
+     * Create a new handler stack.
+     *
+     * @param callable $handler
+     *
+     * @return \GuzzleHttp\HandlerStack
+     */
+    private static function createHandlerStack(callable $handler): HandlerStack
+    {
+        $stack = new HandlerStack($handler);
+
+        $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
+        $stack->push(Middleware::redirect(), 'allow_redirects');
+        $stack->push(Middleware::cookies(), 'cookies');
+        $stack->push(Middleware::prepareBody(), 'prepare_body');
+
+        return $stack;
+    }
+
+    /**
+     * Create a new retry middleware.
+     *
+     * @param int   $backoff
+     * @param int[] $codes
+     *
+     * @return callable
+     */
+    private static function createRetryMiddleware(int $backoff, array $codes): callable
+    {
+        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes) {
+            return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
+        }, function ($retries) use ($backoff) {
+            return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
+        });
     }
 }
