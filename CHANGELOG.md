@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V4.2 (21/10/2020)
+
+* Expose a way to create the inner handler
+
+
 ## V4.1 (10/10/2020)
 
 * Full PHP 8.0 support
