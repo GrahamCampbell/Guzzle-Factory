@@ -86,7 +86,7 @@ final class GuzzleFactory
      */
     public static function handler(int $backoff = null, array $codes = null, HandlerStack $stack = null)
     {
-        $stack = $stack ?: self::createHandlerStack(Utils::chooseHandler());
+        $stack = $stack ?? self::innerHandler();
 
         $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES), 'retry');
 
@@ -96,13 +96,13 @@ final class GuzzleFactory
     /**
      * Create a new handler stack.
      *
-     * @param callable $handler
+     * @param callable|null $handler
      *
      * @return \GuzzleHttp\HandlerStack
      */
-    private static function createHandlerStack(callable $handler): HandlerStack
+    public static function innerHandler(callable $handler = null): HandlerStack
     {
-        $stack = new HandlerStack($handler);
+        $stack = new HandlerStack($handler ?? Utils::chooseHandler());
 
         $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
         $stack->push(Middleware::redirect(), 'allow_redirects');
