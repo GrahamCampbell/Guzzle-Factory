@@ -76,7 +76,7 @@ final class GuzzleFactory
     public static function make(array $options = [], int $backoff = null, array $codes = null, int $retries = null)
     {
         $config = array_merge(['connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options);
-        $config['handler'] = self::handler($backoff, $codes, $options['handler'] ?? null, $retries);
+        $config['handler'] = self::handler($backoff, $codes, $retries, $options['handler'] ?? null);
 
         return new Client($config);
     }
@@ -91,7 +91,7 @@ final class GuzzleFactory
      *
      * @return \GuzzleHttp\HandlerStack
      */
-    public static function handler(int $backoff = null, array $codes = null, HandlerStack $stack = null, int $retries = null)
+    public static function handler(int $backoff = null, array $codes = null, int $retries = null, HandlerStack $stack = null)
     {
         $stack = $stack ?? self::innerHandler();
 
