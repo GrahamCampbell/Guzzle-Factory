@@ -86,8 +86,8 @@ final class GuzzleFactory
      *
      * @param int|null                      $backoff
      * @param int[]|null                    $codes
-     * @param \GuzzleHttp\HandlerStack|null $stack
      * @param int|null                      $retries
+     * @param \GuzzleHttp\HandlerStack|null $stack
      *
      * @return \GuzzleHttp\HandlerStack
      */
