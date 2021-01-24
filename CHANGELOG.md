@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.0 (24/01/2021)
+
+* Support customising the number of retries
+
+
 ## V4.2 (21/10/2020)
 
 * Expose a way to create the inner handler
