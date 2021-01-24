@@ -59,18 +59,24 @@ final class GuzzleFactory
     const CODES = [429];
 
     /**
+     * The default amount of retries.
+     */
+    const RETRIES = 3;
+
+    /**
      * Create a new guzzle client.
      *
      * @param array      $options
      * @param int|null   $backoff
      * @param int[]|null $codes
+     * @param int|null   $retries
      *
      * @return \GuzzleHttp\Client
      */
-    public static function make(array $options = [], int $backoff = null, array $codes = null)
+    public static function make(array $options = [], int $backoff = null, array $codes = null, int $retries = null)
     {
         $config = array_merge(['connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options);
-        $config['handler'] = self::handler($backoff, $codes, $options['handler'] ?? null);
+        $config['handler'] = self::handler($backoff, $codes, $retries, $options['handler'] ?? null);
 
         return new Client($config);
     }
@@ -80,15 +86,20 @@ final class GuzzleFactory
      *
      * @param int|null                      $backoff
      * @param int[]|null                    $codes
+     * @param int|null                      $retries
      * @param \GuzzleHttp\HandlerStack|null $stack
      *
      * @return \GuzzleHttp\HandlerStack
      */
-    public static function handler(int $backoff = null, array $codes = null, HandlerStack $stack = null)
+    public static function handler(int $backoff = null, array $codes = null, int $retries = null, HandlerStack $stack = null)
     {
         $stack = $stack ?? self::innerHandler();
 
-        $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES), 'retry');
+        if ($retries === 0) {
+            return $stack;
+        }
+
+        $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES, $retries ?? self::RETRIES), 'retry');
 
         return $stack;
     }
@@ -117,13 +128,14 @@ final class GuzzleFactory
      *
      * @param int   $backoff
      * @param int[] $codes
+     * @param int   $maxRetries
      *
      * @return callable
      */
-    private static function createRetryMiddleware(int $backoff, array $codes): callable
+    private static function createRetryMiddleware(int $backoff, array $codes, int $maxRetries): callable
     {
-        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes) {
-            return $retries < 3 && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
+        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
+            return $retries < $maxRetries && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
         }, function ($retries) use ($backoff) {
             return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
         });

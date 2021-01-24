@@ -15,7 +15,10 @@ namespace GrahamCampbell\Tests\GuzzleFactory;
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,5 +36,33 @@ class GuzzleFactoryTest extends TestCase
     public function testHandler()
     {
         $this->assertInstanceOf(HandlerStack::class, GuzzleFactory::handler());
+    }
+
+    public function testRetries()
+    {
+        $increment = function () use (&$totalRequests) {
+            $totalRequests += 1;
+        };
+
+        $totalRequests = 0;
+        $handler = new MockHandler([new Response(500), new Response(500), new Response(500), new Response(500)], $increment);
+        $stack = new HandlerStack($handler);
+        $client = GuzzleFactory::make(['handler' => $stack], 0, [500]);
+        $client->sendRequest(new Request('GET', 'http://test.com'));
+        self::assertEquals(4, $totalRequests);
+
+        $totalRequests = 0;
+        $handler = new MockHandler([new Response(500), new Response(500)], $increment);
+        $stack = new HandlerStack($handler);
+        $client = GuzzleFactory::make(['handler' => $stack], 0, [500], 1);
+        $client->sendRequest(new Request('GET', 'http://test.com'));
+        self::assertEquals(2, $totalRequests);
+
+        $totalRequests = 0;
+        $handler = new MockHandler([new Response(500)], $increment);
+        $stack = new HandlerStack($handler);
+        $client = GuzzleFactory::make(['handler' => $stack], 0, [500], 0);
+        $client->sendRequest(new Request('GET', 'http://test.com'));
+        self::assertEquals(1, $totalRequests);
     }
 }
