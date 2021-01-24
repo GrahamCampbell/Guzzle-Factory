@@ -137,7 +137,7 @@ final class GuzzleFactory
         return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
             return $retries < $maxRetries && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
         }, function ($retries) use ($backoff) {
-            return (int) pow(2, $retries) * ($backoff === null ? self::BACKOFF : $backoff);
+            return (int) pow(2, $retries) * $backoff;
         });
     }
 }
