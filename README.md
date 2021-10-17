@@ -38,7 +38,7 @@ $client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
 
 ## Security
 
-If you discover a security vulnerability within this package, please send an email to Graham Campbell at hello@gjcampbell.co.uk. All security vulnerabilities will be promptly addressed. You may view our full security policy [here](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy).
+If you discover a security vulnerability within this package, please send an email to security@tidelift.com. All security vulnerabilities will be promptly addressed. You may view our full security policy [here](https://github.com/GrahamCampbell/Guzzle-Factory/security/policy).
 
 
 ## License
