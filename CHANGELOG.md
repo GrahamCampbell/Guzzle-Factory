@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.0.2 (17/10/2021)
+
+* Corrected docs
+
+
 ## V5.0.1 (17/10/2021)
 
 * Provisional PHP 8.1 support
