@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.0.1 (17/10/2021)
+
+* Provisional PHP 8.1 support
+
+
 ## V5.0 (24/01/2021)
 
 * Support customising the number of retries
