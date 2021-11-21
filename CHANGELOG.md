@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.0.3 (21/11/2021)
+
+* Updated package metadata
+
+
 ## V5.0.2 (17/10/2021)
 
 * Corrected docs
