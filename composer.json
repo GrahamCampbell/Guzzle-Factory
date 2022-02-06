@@ -11,12 +11,12 @@
         }
     ],
     "require": {
-        "php": "^7.2.5 || ^8.0",
-        "guzzlehttp/guzzle": "^7.2"
+        "php": "^7.4.15 || ^8.0.2",
+        "guzzlehttp/guzzle": "^7.4.1"
     },
     "require-dev": {
-        "graham-campbell/analyzer": "^3.0.4",
-        "phpunit/phpunit": "^8.5.8 || ^9.3.7"
+        "graham-campbell/analyzer": "^3.1",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {

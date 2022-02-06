@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.1 (UPCOMING)
+
+* Dropped PHP < 7.4
+
+
 ## V5.0.3 (21/11/2021)
 
 * Updated package metadata
