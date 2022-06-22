@@ -2,7 +2,12 @@ CHANGE LOG
 ==========
 
 
-## V5.1 (30/05/2021)
+## V5.1.1 (22/06/2022)
+
+* Bumped minimum versions
+
+
+## V5.1 (30/05/2022)
 
 * Dropped PHP < 7.4
 
