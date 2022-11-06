@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V5.1.2 (22/11/2022)
+
+* PHP 8.2 support
+
+
 ## V5.1.1 (22/06/2022)
 
 * Bumped minimum versions
