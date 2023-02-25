@@ -6,7 +6,7 @@ Guzzle Factory was created by, and is maintained by [Graham Campbell](https://gi
 ![Banner](https://user-images.githubusercontent.com/2829600/71477092-0f3c7780-27e0-11ea-95cb-22c5ff39ab29.png)
 
 <p align="center">
-<a href="https://github.com/GrahamCampbell/Guzzle-Factory/actions?query=workflow%3ATests"><img src="https://img.shields.io/github/workflow/status/GrahamCampbell/Guzzle-Factory/Tests?label=Tests&style=flat-square" alt="Build Status"></img></a>
+<a href="https://github.com/GrahamCampbell/Guzzle-Factory/actions?query=workflow%3ATests"><img src="https://img.shields.io/github/actions/workflow/status/GrahamCampbell/Guzzle-Factory/tests.yml?label=Tests&style=flat-square" alt="Build Status"></img></a>
 <a href="https://github.styleci.io/repos/88412277"><img src="https://github.styleci.io/repos/88412277/shield" alt="StyleCI Status"></img></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square" alt="Software License"></img></a>
 <a href="https://packagist.org/packages/graham-campbell/guzzle-factory"><img src="https://img.shields.io/packagist/dt/graham-campbell/guzzle-factory?style=flat-square" alt="Packagist Downloads"></img></a>
@@ -21,7 +21,7 @@ This version requires [PHP](https://www.php.net/) 7.4-8.2.
 To get the latest version, simply require the project using [Composer](https://getcomposer.org/):
 
 ```bash
-$ composer require "graham-campbell/guzzle-factory:^5.1"
+$ composer require "graham-campbell/guzzle-factory:^6.0"
 ```
 
 

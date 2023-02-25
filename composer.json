@@ -16,8 +16,8 @@
         "guzzlehttp/psr7": "^2.4.3"
     },
     "require-dev": {
-        "graham-campbell/analyzer": "^3.1",
-        "phpunit/phpunit": "^9.5"
+        "graham-campbell/analyzer": "^4.0",
+        "phpunit/phpunit": "^9.6.3 || ^10.0.12"
     },
     "autoload": {
         "psr-4": {

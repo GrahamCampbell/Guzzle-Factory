@@ -28,19 +28,19 @@ use PHPUnit\Framework\TestCase;
  */
 class GuzzleFactoryTest extends TestCase
 {
-    public function testMake()
+    public function testMake(): void
     {
-        $this->assertInstanceOf(Client::class, GuzzleFactory::make());
+        self::assertInstanceOf(Client::class, GuzzleFactory::make());
     }
 
-    public function testHandler()
+    public function testHandler(): void
     {
-        $this->assertInstanceOf(HandlerStack::class, GuzzleFactory::handler());
+        self::assertInstanceOf(HandlerStack::class, GuzzleFactory::handler());
     }
 
-    public function testRetries()
+    public function testRetries(): void
     {
-        $increment = function () use (&$totalRequests) {
+        $increment = function () use (&$totalRequests): void {
             $totalRequests += 1;
         };
 
