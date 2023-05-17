@@ -2,7 +2,7 @@ CHANGE LOG
 ==========
 
 
-## V7.0 (XX/05/2023)
+## V7.0 (17/05/2023)
 
 * Bumped minimum versions
 * Set minimum TLS version to 1.2
