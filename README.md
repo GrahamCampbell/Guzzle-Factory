@@ -21,7 +21,7 @@ This version requires [PHP](https://www.php.net/) 7.4-8.2.
 To get the latest version, simply require the project using [Composer](https://getcomposer.org/):
 
 ```bash
-$ composer require "graham-campbell/guzzle-factory:^6.0"
+$ composer require "graham-campbell/guzzle-factory:^7.0"
 ```
 
 
