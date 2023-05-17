@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\GuzzleFactory;
 
+use Closure;
 use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
