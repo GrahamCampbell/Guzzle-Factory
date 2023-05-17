@@ -20,6 +20,7 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
+use GuzzleHttp\RetryMiddleware;
 use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -88,9 +89,9 @@ final class GuzzleFactory
         int $retries = null
     ): Client {
         $config = array_merge([
-            RequestOptions::CRYPTO_METHOD => self::CRYPTO_METHOD,
+            RequestOptions::CRYPTO_METHOD   => self::CRYPTO_METHOD,
             RequestOptions::CONNECT_TIMEOUT => self::CONNECT_TIMEOUT,
-            RequestOptions::TIMEOUT => self::TIMEOUT,
+            RequestOptions::TIMEOUT         => self::TIMEOUT,
         ], $options);
 
         $config['handler'] = self::handler($backoff, $codes, $retries, $options['handler'] ?? null);
@@ -152,17 +153,23 @@ final class GuzzleFactory
      * @param int[] $codes
      * @param int   $maxRetries
      *
-     * @return callable
+     * @return Closure
      */
     private static function createRetryMiddleware(
         int $backoff,
         array $codes,
         int $maxRetries
-    ): callable {
-        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
+    ): Closure {
+        $decider = function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
             return $retries < $maxRetries && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
-        }, function ($retries) use ($backoff) {
+        };
+
+        $delay = function ($retries) use ($backoff) {
             return (int) pow(2, $retries) * $backoff;
-        });
+        };
+
+        return static function (callable $handler) use ($decider, $delay): RetryMiddleware {
+            return new RetryMiddleware($decider, $handler, $delay);
+        };
     }
 }
