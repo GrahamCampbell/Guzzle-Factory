@@ -2,13 +2,19 @@ CHANGE LOG
 ==========
 
 
+## V7.0 (XX/05/2023)
+
+* Bumped minimum versions
+* Set minimum TLS version to 1.2
+
+
 ## V6.0 (25/02/2023)
 
 * Updated constants to be private
 * Added return types to all methods
 
 
-#### V5.1.2 (22/11/2022)
+## V5.1.2 (22/11/2022)
 
 * PHP 8.2 support
 

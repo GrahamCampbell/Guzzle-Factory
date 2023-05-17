@@ -19,6 +19,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -30,6 +31,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class GuzzleFactory
 {
+    /**
+     * The default crypto method.
+     *
+     * @var int
+     */
+    private const CRYPTO_METHOD = \STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+
     /**
      * The default connect timeout.
      *
@@ -79,7 +87,12 @@ final class GuzzleFactory
         array $codes = null,
         int $retries = null
     ): Client {
-        $config = array_merge(['connect_timeout' => self::CONNECT_TIMEOUT, 'timeout' => self::TIMEOUT], $options);
+        $config = array_merge([
+            RequestOptions::CRYPTO_METHOD => self::CRYPTO_METHOD,
+            RequestOptions::CONNECT_TIMEOUT => self::CONNECT_TIMEOUT,
+            RequestOptions::TIMEOUT => self::TIMEOUT,
+        ], $options);
+
         $config['handler'] = self::handler($backoff, $codes, $retries, $options['handler'] ?? null);
 
         return new Client($config);
