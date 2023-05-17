@@ -161,11 +161,11 @@ final class GuzzleFactory
         array $codes,
         int $maxRetries
     ): Closure {
-        $decider = function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
+        $decider = static function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
             return $retries < $maxRetries && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
         };
 
-        $delay = function ($retries) use ($backoff) {
+        $delay = static function ($retries) use ($backoff) {
             return (int) pow(2, $retries) * $backoff;
         };
 
