@@ -16,7 +16,7 @@ Guzzle Factory was created by, and is maintained by [Graham Campbell](https://gi
 
 ## Installation
 
-This version requires [PHP](https://www.php.net/) 7.4-8.2.
+This version requires [PHP](https://www.php.net/) 7.4-8.3.
 
 To get the latest version, simply require the project using [Composer](https://getcomposer.org/):
 

@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V7.0.1 (UPCOMING)
+
+* PHP 8.3 support
+
+
 ## V7.0 (17/05/2023)
 
 * Bumped minimum versions
