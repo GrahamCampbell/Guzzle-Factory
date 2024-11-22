@@ -85,9 +85,9 @@ final class GuzzleFactory
      */
     public static function make(
         array $options = [],
-        int $backoff = null,
-        array $codes = null,
-        int $retries = null
+        ?int $backoff = null,
+        ?array $codes = null,
+        ?int $retries = null
     ): Client {
         $config = array_merge([
             RequestOptions::CRYPTO_METHOD   => self::CRYPTO_METHOD,
@@ -111,10 +111,10 @@ final class GuzzleFactory
      * @return \GuzzleHttp\HandlerStack
      */
     public static function handler(
-        int $backoff = null,
-        array $codes = null,
-        int $retries = null,
-        HandlerStack $stack = null
+        ?int $backoff = null,
+        ?array $codes = null,
+        ?int $retries = null,
+        ?HandlerStack $stack = null
     ): HandlerStack {
         $stack = $stack ?? self::innerHandler();
 
@@ -135,7 +135,7 @@ final class GuzzleFactory
      * @return \GuzzleHttp\HandlerStack
      */
     public static function innerHandler(
-        callable $handler = null
+        ?callable $handler = null
     ): HandlerStack {
         $stack = new HandlerStack($handler ?? Utils::chooseHandler());
 
@@ -161,7 +161,7 @@ final class GuzzleFactory
         array $codes,
         int $maxRetries
     ): Closure {
-        $decider = static function ($retries, RequestInterface $request, ResponseInterface $response = null, TransferException $exception = null) use ($codes, $maxRetries) {
+        $decider = static function ($retries, RequestInterface $request, ?ResponseInterface $response = null, ?TransferException $exception = null) use ($codes, $maxRetries) {
             return $retries < $maxRetries && ($exception instanceof ConnectException || ($response && ($response->getStatusCode() >= 500 || in_array($response->getStatusCode(), $codes, true))));
         };
 
