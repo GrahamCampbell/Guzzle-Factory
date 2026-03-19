@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## V7.0.3 (UPCOMING)
+
+* PHP 8.5 support
+
+
 ## V7.0.2 (12/01/2025)
 
 * PHP 8.4 support
