@@ -18,6 +18,7 @@ use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Handler\CurlShare;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
@@ -76,26 +77,38 @@ final class GuzzleFactory
     /**
      * Create a new guzzle client.
      *
-     * @param array      $options
-     * @param int|null   $backoff
-     * @param int[]|null $codes
-     * @param int|null   $retries
+     * @param array                               $options
+     * @param (callable(HandlerStack): void)|null $configure
+     * @param CurlShare::*|null                   $curlShare
+     * @param int|null                            $backoff
+     * @param int[]|null                          $codes
+     * @param int|null                            $retries
      *
      * @return \GuzzleHttp\Client
      */
     public static function make(
         array $options = [],
+        ?callable $configure = null,
+        ?string $curlShare = null,
         ?int $backoff = null,
         ?array $codes = null,
         ?int $retries = null
     ): Client {
+        if (\array_key_exists('handler', $options)) {
+            throw new \InvalidArgumentException('Use the configure callback to customize the handler stack; passing a handler in the client options array is not supported.');
+        }
+
+        if (\array_key_exists('curl_share', $options)) {
+            throw new \InvalidArgumentException('Pass cURL sharing mode with the curlShare argument, not the client options array.');
+        }
+
         $config = array_merge([
             RequestOptions::CRYPTO_METHOD   => self::CRYPTO_METHOD,
             RequestOptions::CONNECT_TIMEOUT => self::CONNECT_TIMEOUT,
             RequestOptions::TIMEOUT         => self::TIMEOUT,
         ], $options);
 
-        $config['handler'] = self::handler($backoff, $codes, $retries, $options['handler'] ?? null);
+        $config['handler'] = self::handler($configure, $curlShare, $backoff, $codes, $retries);
 
         return new Client($config);
     }
@@ -103,20 +116,33 @@ final class GuzzleFactory
     /**
      * Create a new retrying handler stack.
      *
-     * @param int|null                      $backoff
-     * @param int[]|null                    $codes
-     * @param int|null                      $retries
-     * @param \GuzzleHttp\HandlerStack|null $stack
+     * @param (callable(HandlerStack): void)|null $configure
+     * @param CurlShare::*|null                   $curlShare
+     * @param int|null                            $backoff
+     * @param int[]|null                          $codes
+     * @param int|null                            $retries
      *
      * @return \GuzzleHttp\HandlerStack
      */
-    public static function handler(
+    private static function handler(
+        ?callable $configure = null,
+        ?string $curlShare = null,
         ?int $backoff = null,
         ?array $codes = null,
-        ?int $retries = null,
-        ?HandlerStack $stack = null
+        ?int $retries = null
     ): HandlerStack {
-        $stack = $stack ?? self::innerHandler();
+        $curlShare = self::normalizeCurlShare($curlShare);
+        $handlerOptions = self::curlSharingEnabled($curlShare) ? ['share' => $curlShare] : [];
+        $stack = new HandlerStack(Utils::chooseHandler($handlerOptions));
+
+        $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
+        $stack->push(Middleware::redirect(), 'allow_redirects');
+        $stack->push(Middleware::cookies(), 'cookies');
+        $stack->push(Middleware::prepareBody(), 'prepare_body');
+
+        if ($configure !== null) {
+            $configure($stack);
+        }
 
         if ($retries === 0) {
             return $stack;
@@ -128,23 +154,25 @@ final class GuzzleFactory
     }
 
     /**
-     * Create a new handler stack.
+     * @param CurlShare::*|null $curlShare
      *
-     * @param callable|null $handler
-     *
-     * @return \GuzzleHttp\HandlerStack
+     * @return CurlShare::*|null
      */
-    public static function innerHandler(
-        ?callable $handler = null
-    ): HandlerStack {
-        $stack = new HandlerStack($handler ?? Utils::chooseHandler());
+    private static function normalizeCurlShare(?string $curlShare): ?string
+    {
+        if ($curlShare === null || $curlShare === CurlShare::NONE || $curlShare === CurlShare::HANDLER) {
+            return $curlShare;
+        }
 
-        $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
-        $stack->push(Middleware::redirect(), 'allow_redirects');
-        $stack->push(Middleware::cookies(), 'cookies');
-        $stack->push(Middleware::prepareBody(), 'prepare_body');
+        throw new \TypeError('The curlShare argument must be null, CurlShare::NONE, or CurlShare::HANDLER.');
+    }
 
-        return $stack;
+    /**
+     * @param CurlShare::*|null $curlShare
+     */
+    private static function curlSharingEnabled(?string $curlShare): bool
+    {
+        return $curlShare !== null && $curlShare !== CurlShare::NONE;
     }
 
     /**

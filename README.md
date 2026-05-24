@@ -21,7 +21,7 @@ This version requires [PHP](https://www.php.net/) 7.4-8.5.
 To get the latest version, simply require the project using [Composer](https://getcomposer.org/):
 
 ```bash
-$ composer require "graham-campbell/guzzle-factory:^7.0"
+$ composer require "graham-campbell/guzzle-factory:^8.0"
 ```
 
 
@@ -31,8 +31,23 @@ $ composer require "graham-campbell/guzzle-factory:^7.0"
 <?php
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
+use GuzzleHttp\Handler\CurlShare;
+use GuzzleHttp\HandlerStack;
 
 $client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
+
+$sharedClient = GuzzleFactory::make(
+    ['base_uri' => 'https://example.com'],
+    null,
+    CurlShare::HANDLER,
+);
+
+$customizedClient = GuzzleFactory::make(
+    ['base_uri' => 'https://example.com'],
+    static function (HandlerStack $stack): void {
+        $stack->push(static fn (callable $handler): callable => $handler, 'custom');
+    },
+);
 ```
 
 

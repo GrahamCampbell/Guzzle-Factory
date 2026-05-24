@@ -2,6 +2,13 @@ CHANGE LOG
 ==========
 
 
+## V8.0 (Upcoming)
+
+* Require Guzzle 7.11
+* Removed direct handler stack creation from the public API
+* Added explicit handler stack customization and cURL sharing arguments
+
+
 ## V7.0.3 (19/03/2026)
 
 * PHP 8.5 support

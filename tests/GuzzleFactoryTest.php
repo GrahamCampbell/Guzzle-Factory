@@ -15,6 +15,7 @@ namespace GrahamCampbell\Tests\GuzzleFactory;
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlShare;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
@@ -33,9 +34,51 @@ class GuzzleFactoryTest extends TestCase
         self::assertInstanceOf(Client::class, GuzzleFactory::make());
     }
 
-    public function testHandler(): void
+    public function testMakeRejectsHandlerOption(): void
     {
-        self::assertInstanceOf(HandlerStack::class, GuzzleFactory::handler());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('handler');
+
+        GuzzleFactory::make([
+            'handler' => new HandlerStack(new MockHandler()),
+        ]);
+    }
+
+    public function testMakeRejectsCurlShareOption(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('curlShare');
+
+        GuzzleFactory::make([
+            'curl_share' => CurlShare::HANDLER,
+        ]);
+    }
+
+    public function testMakeAcceptsCurlShareHandlerMode(): void
+    {
+        self::skipIfCurlShareIsUnavailable();
+
+        self::assertInstanceOf(Client::class, GuzzleFactory::make([], null, CurlShare::HANDLER));
+    }
+
+    public function testConfigureCallbackIsApplied(): void
+    {
+        $configured = false;
+        $client = GuzzleFactory::make([], static function (HandlerStack $stack) use (&$configured): void {
+            $configured = true;
+            $stack->push(static fn (callable $handler): callable => $handler, 'configured');
+        });
+
+        self::assertTrue($configured);
+        self::assertInstanceOf(Client::class, $client);
+    }
+
+    public function testInvalidCurlShareThrowsTypeError(): void
+    {
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('curlShare');
+
+        GuzzleFactory::make([], null, 'invalid');
     }
 
     public function testRetries(): void
@@ -46,23 +89,34 @@ class GuzzleFactoryTest extends TestCase
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500), new Response(500), new Response(500), new Response(500)], $increment);
-        $stack = new HandlerStack($handler);
-        $client = GuzzleFactory::make(['handler' => $stack], 0, [500]);
+        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500]);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(4, $totalRequests);
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500), new Response(500)], $increment);
-        $stack = new HandlerStack($handler);
-        $client = GuzzleFactory::make(['handler' => $stack], 0, [500], 1);
+        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500], 1);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(2, $totalRequests);
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500)], $increment);
-        $stack = new HandlerStack($handler);
-        $client = GuzzleFactory::make(['handler' => $stack], 0, [500], 0);
+        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500], 0);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(1, $totalRequests);
+    }
+
+    private static function configureMockHandler(MockHandler $handler): callable
+    {
+        return static function (HandlerStack $stack) use ($handler): void {
+            $stack->setHandler($handler);
+        };
+    }
+
+    private static function skipIfCurlShareIsUnavailable(): void
+    {
+        if (!\function_exists('curl_share_init') || !\function_exists('curl_share_setopt') || !\function_exists('curl_exec')) {
+            self::markTestSkipped('cURL share handles are unavailable.');
+        }
     }
 }

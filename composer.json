@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": "^7.4.15 || ^8.0.2",
-        "guzzlehttp/guzzle": "^7.9.2",
-        "guzzlehttp/psr7": "^2.7.0"
+        "guzzlehttp/guzzle": "^7.11@dev",
+        "guzzlehttp/psr7": "^2.11@dev"
     },
     "require-dev": {
         "graham-campbell/analyzer": "^4.2.1 || ^5.1",
