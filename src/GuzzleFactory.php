@@ -131,7 +131,16 @@ final class GuzzleFactory
         ?array $codes = null,
         ?int $retries = null
     ): HandlerStack {
-        $curlShare = self::normalizeCurlShare($curlShare);
+        if ($curlShare !== null && $curlShare !== CurlShare::NONE && $curlShare !== CurlShare::HANDLER) {
+            throw new \TypeError(\sprintf(
+                '%s::make(): Argument #2 ($curlShare) must be of type null|%s::NONE|%s::HANDLER, %s given',
+                self::class,
+                CurlShare::class,
+                CurlShare::class,
+                \gettype($curlShare)
+            ));
+        }
+
         $handlerOptions = self::curlSharingEnabled($curlShare) ? ['share' => $curlShare] : [];
         $stack = new HandlerStack(Utils::chooseHandler($handlerOptions));
 
@@ -151,26 +160,6 @@ final class GuzzleFactory
         $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES, $retries ?? self::RETRIES), 'retry');
 
         return $stack;
-    }
-
-    /**
-     * @param CurlShare::*|null $curlShare
-     *
-     * @return CurlShare::*|null
-     */
-    private static function normalizeCurlShare(?string $curlShare): ?string
-    {
-        if ($curlShare === null || $curlShare === CurlShare::NONE || $curlShare === CurlShare::HANDLER) {
-            return $curlShare;
-        }
-
-        throw new \TypeError(\sprintf(
-            '%s::make(): Argument #2 ($curlShare) must be of type null|%s::NONE|%s::HANDLER, %s given',
-            self::class,
-            CurlShare::class,
-            CurlShare::class,
-            \gettype($curlShare)
-        ));
     }
 
     /**
