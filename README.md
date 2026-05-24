@@ -31,22 +31,41 @@ $ composer require "graham-campbell/guzzle-factory:^8.0"
 <?php
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
-use GuzzleHttp\Handler\CurlShare;
-use GuzzleHttp\HandlerStack;
 
 $client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
+```
 
-$sharedClient = GuzzleFactory::make(
-    ['base_uri' => 'https://example.com'],
-    CurlShare::HANDLER,
-);
+### Customizing The Handler Stack
 
-$customizedClient = GuzzleFactory::make(
+```php
+<?php
+
+use GrahamCampbell\GuzzleFactory\GuzzleFactory;
+use GuzzleHttp\HandlerStack;
+
+$client = GuzzleFactory::make(
     ['base_uri' => 'https://example.com'],
     null,
     static function (HandlerStack $stack): void {
         $stack->push(static fn (callable $handler): callable => $handler, 'custom');
     },
+);
+```
+
+### cURL Sharing
+
+cURL sharing is disabled by default. If you need handler-lifetime cURL sharing,
+pass the sharing mode as the second argument:
+
+```php
+<?php
+
+use GrahamCampbell\GuzzleFactory\GuzzleFactory;
+use GuzzleHttp\Handler\CurlShare;
+
+$client = GuzzleFactory::make(
+    ['base_uri' => 'https://example.com'],
+    CurlShare::HANDLER,
 );
 ```
 
