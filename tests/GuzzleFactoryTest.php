@@ -58,13 +58,13 @@ class GuzzleFactoryTest extends TestCase
     {
         self::skipIfCurlShareIsUnavailable();
 
-        self::assertInstanceOf(Client::class, GuzzleFactory::make([], null, CurlShare::HANDLER));
+        self::assertInstanceOf(Client::class, GuzzleFactory::make([], CurlShare::HANDLER));
     }
 
     public function testConfigureCallbackIsApplied(): void
     {
         $configured = false;
-        $client = GuzzleFactory::make([], static function (HandlerStack $stack) use (&$configured): void {
+        $client = GuzzleFactory::make([], null, static function (HandlerStack $stack) use (&$configured): void {
             $configured = true;
             $stack->push(static fn (callable $handler): callable => $handler, 'configured');
         });
@@ -78,7 +78,7 @@ class GuzzleFactoryTest extends TestCase
         $this->expectException(\TypeError::class);
         $this->expectExceptionMessage('curlShare');
 
-        GuzzleFactory::make([], null, 'invalid');
+        GuzzleFactory::make([], 'invalid');
     }
 
     public function testRetries(): void
@@ -89,19 +89,19 @@ class GuzzleFactoryTest extends TestCase
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500), new Response(500), new Response(500), new Response(500)], $increment);
-        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500]);
+        $client = GuzzleFactory::make([], null, self::configureMockHandler($handler), 0, [500]);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(4, $totalRequests);
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500), new Response(500)], $increment);
-        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500], 1);
+        $client = GuzzleFactory::make([], null, self::configureMockHandler($handler), 0, [500], 1);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(2, $totalRequests);
 
         $totalRequests = 0;
         $handler = new MockHandler([new Response(500)], $increment);
-        $client = GuzzleFactory::make([], self::configureMockHandler($handler), null, 0, [500], 0);
+        $client = GuzzleFactory::make([], null, self::configureMockHandler($handler), 0, [500], 0);
         $client->sendRequest(new Request('GET', 'http://test.com'));
         self::assertEquals(1, $totalRequests);
     }

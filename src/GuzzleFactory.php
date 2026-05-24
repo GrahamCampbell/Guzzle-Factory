@@ -78,8 +78,8 @@ final class GuzzleFactory
      * Create a new guzzle client.
      *
      * @param array                               $options
-     * @param (callable(HandlerStack): void)|null $configure
      * @param CurlShare::*|null                   $curlShare
+     * @param (callable(HandlerStack): void)|null $configure
      * @param int|null                            $backoff
      * @param int[]|null                          $codes
      * @param int|null                            $retries
@@ -88,8 +88,8 @@ final class GuzzleFactory
      */
     public static function make(
         array $options = [],
-        ?callable $configure = null,
         ?string $curlShare = null,
+        ?callable $configure = null,
         ?int $backoff = null,
         ?array $codes = null,
         ?int $retries = null
@@ -108,7 +108,7 @@ final class GuzzleFactory
             RequestOptions::TIMEOUT         => self::TIMEOUT,
         ], $options);
 
-        $config['handler'] = self::handler($configure, $curlShare, $backoff, $codes, $retries);
+        $config['handler'] = self::handler($curlShare, $configure, $backoff, $codes, $retries);
 
         return new Client($config);
     }
@@ -116,8 +116,8 @@ final class GuzzleFactory
     /**
      * Create a new retrying handler stack.
      *
-     * @param (callable(HandlerStack): void)|null $configure
      * @param CurlShare::*|null                   $curlShare
+     * @param (callable(HandlerStack): void)|null $configure
      * @param int|null                            $backoff
      * @param int[]|null                          $codes
      * @param int|null                            $retries
@@ -125,8 +125,8 @@ final class GuzzleFactory
      * @return \GuzzleHttp\HandlerStack
      */
     private static function handler(
-        ?callable $configure = null,
         ?string $curlShare = null,
+        ?callable $configure = null,
         ?int $backoff = null,
         ?array $codes = null,
         ?int $retries = null
@@ -164,7 +164,13 @@ final class GuzzleFactory
             return $curlShare;
         }
 
-        throw new \TypeError('The curlShare argument must be null, CurlShare::NONE, or CurlShare::HANDLER.');
+        throw new \TypeError(\sprintf(
+            '%s::make(): Argument #2 ($curlShare) must be of type null|%s::NONE|%s::HANDLER, %s given',
+            self::class,
+            CurlShare::class,
+            CurlShare::class,
+            \gettype($curlShare)
+        ));
     }
 
     /**

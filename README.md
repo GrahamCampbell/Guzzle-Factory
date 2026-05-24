@@ -38,12 +38,12 @@ $client = GuzzleFactory::make(['base_uri' => 'https://example.com']);
 
 $sharedClient = GuzzleFactory::make(
     ['base_uri' => 'https://example.com'],
-    null,
     CurlShare::HANDLER,
 );
 
 $customizedClient = GuzzleFactory::make(
     ['base_uri' => 'https://example.com'],
+    null,
     static function (HandlerStack $stack): void {
         $stack->push(static fn (callable $handler): callable => $handler, 'custom');
     },
