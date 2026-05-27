@@ -18,11 +18,11 @@ use GuzzleHttp\BodySummarizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Handler\CurlShare;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\RetryMiddleware;
+use GuzzleHttp\TransportSharing;
 use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -78,7 +78,7 @@ final class GuzzleFactory
      * Create a new guzzle client.
      *
      * @param array                               $options
-     * @param CurlShare::*|null                   $curlShare
+     * @param TransportSharing::*|null            $transportSharing
      * @param (callable(HandlerStack): void)|null $configure
      * @param int|null                            $backoff
      * @param int[]|null                          $codes
@@ -88,7 +88,7 @@ final class GuzzleFactory
      */
     public static function make(
         array $options = [],
-        ?string $curlShare = null,
+        ?string $transportSharing = null,
         ?callable $configure = null,
         ?int $backoff = null,
         ?array $codes = null,
@@ -98,8 +98,8 @@ final class GuzzleFactory
             throw new \InvalidArgumentException('Use the configure callback to customize the handler stack; passing a handler in the client options array is not supported.');
         }
 
-        if (\array_key_exists('curl_share', $options)) {
-            throw new \InvalidArgumentException('Pass cURL sharing mode with the curlShare argument, not the client options array.');
+        if (\array_key_exists('transport_sharing', $options)) {
+            throw new \InvalidArgumentException('Pass transport sharing mode with the transportSharing argument, not the client options array.');
         }
 
         $config = array_merge([
@@ -108,7 +108,7 @@ final class GuzzleFactory
             RequestOptions::TIMEOUT         => self::TIMEOUT,
         ], $options);
 
-        $config['handler'] = self::handler($curlShare, $configure, $backoff, $codes, $retries);
+        $config['handler'] = self::handler($transportSharing, $configure, $backoff, $codes, $retries);
 
         return new Client($config);
     }
@@ -116,7 +116,7 @@ final class GuzzleFactory
     /**
      * Create a new retrying handler stack.
      *
-     * @param CurlShare::*|null                   $curlShare
+     * @param TransportSharing::*|null            $transportSharing
      * @param (callable(HandlerStack): void)|null $configure
      * @param int|null                            $backoff
      * @param int[]|null                          $codes
@@ -125,23 +125,25 @@ final class GuzzleFactory
      * @return \GuzzleHttp\HandlerStack
      */
     private static function handler(
-        ?string $curlShare = null,
+        ?string $transportSharing = null,
         ?callable $configure = null,
         ?int $backoff = null,
         ?array $codes = null,
         ?int $retries = null
     ): HandlerStack {
-        if ($curlShare !== null && $curlShare !== CurlShare::NONE && $curlShare !== CurlShare::HANDLER) {
+        if ($transportSharing !== null && !\in_array($transportSharing, [TransportSharing::NONE, TransportSharing::HANDLER_PREFER, TransportSharing::HANDLER_REQUIRE], true)) {
             throw new \TypeError(\sprintf(
-                '%s::make(): Argument #2 ($curlShare) must be of type null|%s::NONE|%s::HANDLER, %s given',
+                '%s::make(): Argument #2 ($transportSharing) must be of type %s::*|null, %s given',
                 self::class,
-                CurlShare::class,
-                CurlShare::class,
-                \gettype($curlShare)
+                TransportSharing::class,
+                \get_debug_type($transportSharing)
             ));
         }
 
-        $handlerOptions = self::curlSharingEnabled($curlShare) ? ['share' => $curlShare] : [];
+        $handlerOptions = match ($transportSharing) {
+            TransportSharing::NONE, null => [],
+            default => ['transport_sharing' => $transportSharing],
+        };
         $stack = new HandlerStack(Utils::chooseHandler($handlerOptions));
 
         $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
@@ -160,14 +162,6 @@ final class GuzzleFactory
         $stack->push(self::createRetryMiddleware($backoff ?? self::BACKOFF, $codes ?? self::CODES, $retries ?? self::RETRIES), 'retry');
 
         return $stack;
-    }
-
-    /**
-     * @param CurlShare::*|null $curlShare
-     */
-    private static function curlSharingEnabled(?string $curlShare): bool
-    {
-        return $curlShare !== null && $curlShare !== CurlShare::NONE;
     }
 
     /**

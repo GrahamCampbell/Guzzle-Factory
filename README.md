@@ -52,20 +52,20 @@ $client = GuzzleFactory::make(
 );
 ```
 
-### cURL Sharing
+### Transport Sharing
 
-cURL sharing is disabled by default. If you need handler-lifetime cURL sharing,
-pass the sharing mode as the second argument:
+Transport sharing is disabled by default. If you need best-effort handler-lifetime
+transport sharing, pass the sharing mode as the second argument:
 
 ```php
 <?php
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
-use GuzzleHttp\Handler\CurlShare;
+use GuzzleHttp\TransportSharing;
 
 $client = GuzzleFactory::make(
     ['base_uri' => 'https://example.com'],
-    CurlShare::HANDLER,
+    TransportSharing::HANDLER_PREFER,
 );
 ```
 

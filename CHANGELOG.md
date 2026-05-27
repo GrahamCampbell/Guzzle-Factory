@@ -6,7 +6,7 @@ CHANGE LOG
 
 * Require Guzzle 7.11
 * Removed direct handler stack creation from the public API
-* Added explicit handler stack customization and cURL sharing arguments
+* Added explicit handler stack customization and transport sharing arguments
 
 
 ## V7.0.3 (19/03/2026)

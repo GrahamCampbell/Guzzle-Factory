@@ -15,11 +15,11 @@ namespace GrahamCampbell\Tests\GuzzleFactory;
 
 use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 use GuzzleHttp\Client;
-use GuzzleHttp\Handler\CurlShare;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\TransportSharing;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,21 +44,19 @@ class GuzzleFactoryTest extends TestCase
         ]);
     }
 
-    public function testMakeRejectsCurlShareOption(): void
+    public function testMakeRejectsTransportSharingOption(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('curlShare');
+        $this->expectExceptionMessage('transportSharing');
 
         GuzzleFactory::make([
-            'curl_share' => CurlShare::HANDLER,
+            'transport_sharing' => TransportSharing::HANDLER_PREFER,
         ]);
     }
 
-    public function testMakeAcceptsCurlShareHandlerMode(): void
+    public function testMakeAcceptsTransportSharingHandlerPreferMode(): void
     {
-        self::skipIfCurlShareIsUnavailable();
-
-        self::assertInstanceOf(Client::class, GuzzleFactory::make([], CurlShare::HANDLER));
+        self::assertInstanceOf(Client::class, GuzzleFactory::make([], TransportSharing::HANDLER_PREFER));
     }
 
     public function testConfigureCallbackIsApplied(): void
@@ -73,10 +71,10 @@ class GuzzleFactoryTest extends TestCase
         self::assertInstanceOf(Client::class, $client);
     }
 
-    public function testInvalidCurlShareThrowsTypeError(): void
+    public function testInvalidTransportSharingThrowsTypeError(): void
     {
         $this->expectException(\TypeError::class);
-        $this->expectExceptionMessage('curlShare');
+        $this->expectExceptionMessage('transportSharing');
 
         GuzzleFactory::make([], 'invalid');
     }
@@ -113,10 +111,4 @@ class GuzzleFactoryTest extends TestCase
         };
     }
 
-    private static function skipIfCurlShareIsUnavailable(): void
-    {
-        if (!\function_exists('curl_share_init') || !\function_exists('curl_share_setopt') || !\function_exists('curl_exec')) {
-            self::markTestSkipped('cURL share handles are unavailable.');
-        }
-    }
 }
