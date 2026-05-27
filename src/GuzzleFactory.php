@@ -140,11 +140,7 @@ final class GuzzleFactory
             ));
         }
 
-        $handlerOptions = [];
-
-        if ($transportSharing !== null && $transportSharing !== TransportSharing::NONE) {
-            $handlerOptions = ['transport_sharing' => $transportSharing];
-        }
+        $handlerOptions = $transportSharing === null || $transportSharing === TransportSharing::NONE ? [] : ['transport_sharing' => $transportSharing];
 
         $stack = new HandlerStack(Utils::chooseHandler($handlerOptions));
 
