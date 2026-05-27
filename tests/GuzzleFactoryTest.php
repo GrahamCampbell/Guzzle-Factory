@@ -110,5 +110,4 @@ class GuzzleFactoryTest extends TestCase
             $stack->setHandler($handler);
         };
     }
-
 }
