@@ -2,7 +2,7 @@ CHANGE LOG
 ==========
 
 
-## V8.0 (Upcoming)
+## V8.0 (02/06/2026)
 
 * Require Guzzle 7.11
 * Removed direct handler stack creation from the public API
