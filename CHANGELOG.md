@@ -2,6 +2,11 @@ CHANGE LOG
 ==========
 
 
+## Unreleased
+
+* Added Guzzle 8 support
+
+
 ## V8.0 (02/06/2026)
 
 * Require Guzzle 7.11

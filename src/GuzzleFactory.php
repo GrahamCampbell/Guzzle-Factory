@@ -146,6 +146,12 @@ final class GuzzleFactory
 
         $stack->push(Middleware::httpErrors(new BodySummarizer(250)), 'http_errors');
         $stack->push(Middleware::redirect(), 'allow_redirects');
+
+        // Guzzle 8 applies Basic/Digest via middleware; Guzzle 7 does this in the client.
+        if (\method_exists(Middleware::class, 'auth')) {
+            $stack->push(Middleware::auth(), 'auth');
+        }
+
         $stack->push(Middleware::cookies(), 'cookies');
         $stack->push(Middleware::prepareBody(), 'prepare_body');
 

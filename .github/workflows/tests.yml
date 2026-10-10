@@ -6,12 +6,18 @@ on:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }} / Guzzle ${{ matrix.guzzle }}
     runs-on: ubuntu-24.04
 
     strategy:
       matrix:
         php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+        guzzle: ['^8.0']
+        include:
+          - php: '7.4'
+            guzzle: '^7.11'
+          - php: '8.5'
+            guzzle: '^7.11'
 
     steps:
       - name: Checkout Code
@@ -34,7 +40,7 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer update --no-interaction --no-progress
+          command: composer update --with="guzzlehttp/guzzle:${{ matrix.guzzle }}" --no-interaction --no-progress
 
       - name: Execute PHPUnit
         run: vendor/bin/phpunit

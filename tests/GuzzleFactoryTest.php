@@ -17,6 +17,7 @@ use GrahamCampbell\GuzzleFactory\GuzzleFactory;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransportSharing;
@@ -57,6 +58,24 @@ class GuzzleFactoryTest extends TestCase
     public function testMakeAcceptsTransportSharingHandlerPreferMode(): void
     {
         self::assertInstanceOf(Client::class, GuzzleFactory::make([], TransportSharing::HANDLER_PREFER));
+    }
+
+    public function testGuzzle8AuthMiddlewareIsRegistered(): void
+    {
+        if (!\method_exists(Middleware::class, 'auth')) {
+            $this->markTestSkipped('Auth middleware is Guzzle 8 only.');
+        }
+
+        $names = [];
+        GuzzleFactory::make([], null, static function (HandlerStack $stack) use (&$names): void {
+            $property = new \ReflectionProperty(HandlerStack::class, 'stack');
+            if (\PHP_VERSION_ID < 80100) {
+                $property->setAccessible(true);
+            }
+            $names = array_column($property->getValue($stack), 1);
+        });
+
+        self::assertContains('auth', $names);
     }
 
     public function testConfigureCallbackIsApplied(): void
